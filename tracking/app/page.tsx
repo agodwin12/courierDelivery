@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -9,6 +9,28 @@ export default function Home() {
 
   useEffect(() => {
     setIsVisible(true);
+  }, []);
+
+  // Scroll animation observer
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with scroll-animate class
+    const animatedElements = document.querySelectorAll('.scroll-animate');
+    animatedElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
   const animatedWords = [
@@ -23,18 +45,19 @@ export default function Home() {
   return (
       <div className="min-h-screen bg-white">
         {/* Top Bar */}
-        <div className="bg-[#2d2d2d] text-white py-3 px-6">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm">
-            <p className="mb-2 md:mb-0">The Reliable Delivery Company. Your friend with a truck.</p>
-            <div className="flex gap-6">
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-[#2d2d2d] text-white py-3 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs sm:text-sm">
+            <p className="mb-2 md:mb-0 text-center md:text-left">The Reliable Delivery Company. Your friend with a truck.</p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
+              <div className="flex items-center justify-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span>Make a call: +1(123)456-7890</span>
+                <span className="hidden sm:inline">Make a call: +1(123)456-7890</span>
+                <span className="sm:hidden">+1(123)456-7890</span>
               </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="hidden lg:flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -46,17 +69,17 @@ export default function Home() {
 
         {/* Navigation */}
         <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-          <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <Link href="/" className="flex items-center gap-3">
-                <div className="w-14 h-14 bg-[#8BC34A] rounded-full flex items-center justify-center relative">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <Link href="/" className="flex items-center gap-2 sm:gap-3">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#8BC34A] rounded-full flex items-center justify-center relative">
+                  <svg className="w-5 h-5 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <div className="absolute -bottom-1 w-full h-2 bg-[#7CB342] rounded-full"></div>
+                  <div className="absolute -bottom-1 w-full h-1 sm:h-2 bg-[#7CB342] rounded-full"></div>
                 </div>
-                <span className="text-3xl font-bold text-[#2d2d2d]">MovingCargo</span>
+                <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2d2d2d]">MovinCargo</span>
               </Link>
 
               {/* Desktop Menu */}
@@ -80,13 +103,6 @@ export default function Home() {
                   </svg>
                 </button>
 
-                <div className="relative">
-                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <span className="absolute -top-2 -right-2 bg-[#8BC34A] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
-                </div>
-
                 <Link href="/admin/login" className="px-6 py-3 bg-[#8BC34A] text-white font-semibold rounded hover:bg-[#7CB342] transition-colors">
                   Login
                 </Link>
@@ -94,32 +110,84 @@ export default function Home() {
 
               {/* Mobile Menu Button */}
               <button
-                  className="lg:hidden text-gray-700"
+                  className="lg:hidden text-gray-700 p-2"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  aria-label="Toggle menu"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                {mobileMenuOpen ? (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                ) : (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                )}
               </button>
+            </div>
+
+            {/* Mobile Menu */}
+            <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+                mobileMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+            }`}>
+              <div className="py-4 border-t border-gray-200">
+                <div className="flex flex-col gap-4">
+                  <Link
+                      href="/"
+                      className="text-[#8BC34A] font-medium py-2 px-4 rounded hover:bg-gray-50 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                      href="/track"
+                      className="text-gray-700 font-medium py-2 px-4 rounded hover:bg-gray-50 hover:text-[#8BC34A] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Track
+                  </Link>
+                  <Link
+                      href="/services"
+                      className="text-gray-700 font-medium py-2 px-4 rounded hover:bg-gray-50 hover:text-[#8BC34A] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Services
+                  </Link>
+                  <Link
+                      href="/testimonials"
+                      className="text-gray-700 font-medium py-2 px-4 rounded hover:bg-gray-50 hover:text-[#8BC34A] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Testimonials
+                  </Link>
+                  <Link
+                      href="/admin/login"
+                      className="px-6 py-3 bg-[#8BC34A] text-white font-semibold rounded text-center hover:bg-[#7CB342] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </nav>
 
         {/* Hero Section with Animated Words */}
-        <section className="relative h-[600px] overflow-hidden">
+        <section className="relative h-[500px] sm:h-[600px] lg:h-[700px] overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0 bg-cover bg-center" style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920')"
+            backgroundImage: "url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80')"
           }}>
             <div className="absolute inset-0 bg-black/60"></div>
           </div>
 
           {/* Animated Background Words */}
-          <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {animatedWords.map((word, idx) => (
                 <div
                     key={idx}
-                    className={`absolute text-6xl md:text-8xl font-bold text-white/10 animate-word-${word.angle}`}
+                    className={`absolute text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white/10 animate-word-${word.angle}`}
                     style={{
                       animationDelay: `${word.delay}s`,
                       ...(word.angle === 'top-left' && { top: '-10%', left: '-10%' }),
@@ -136,14 +204,14 @@ export default function Home() {
           </div>
 
           {/* Hero Content */}
-          <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center">
             <div className={`text-white max-w-3xl transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-4 sm:mb-6">
                 Moving families to<br />
                 better lives since <span className="text-[#8BC34A]">1945</span>
               </h1>
-              <p className="text-xl mb-8">A Truly Moving Experience</p>
-              <Link href="/services" className="inline-block px-8 py-4 bg-[#8BC34A] text-white font-semibold rounded hover:bg-[#7CB342] transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#8BC34A]/50">
+              <p className="text-lg sm:text-xl mb-6 sm:mb-8">A Truly Moving Experience</p>
+              <Link href="/services" className="inline-block px-6 sm:px-8 py-3 sm:py-4 bg-[#8BC34A] text-white font-semibold rounded hover:bg-[#7CB342] transition-all hover:scale-105 hover:shadow-xl hover:shadow-[#8BC34A]/50">
                 Our Services
               </Link>
             </div>
@@ -151,13 +219,13 @@ export default function Home() {
         </section>
 
         {/* Services Section */}
-        <section className="bg-[#8BC34A] py-20">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="bg-[#8BC34A] py-12 sm:py-16 lg:py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {[
                 {
                   icon: (
-                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                   ),
@@ -166,7 +234,7 @@ export default function Home() {
                 },
                 {
                   icon: (
-                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
@@ -176,7 +244,7 @@ export default function Home() {
                 },
                 {
                   icon: (
-                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                   ),
@@ -185,7 +253,7 @@ export default function Home() {
                 },
                 {
                   icon: (
-                      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                       </svg>
                   ),
@@ -193,10 +261,10 @@ export default function Home() {
                   description: 'Depending on your product, we provide warehouse activities for warehouse.'
                 }
               ].map((service, idx) => (
-                  <div key={idx} className="bg-white rounded-lg p-6 group hover:shadow-xl transition-shadow">
+                  <div key={idx} className="scroll-animate bg-white rounded-lg p-5 sm:p-6 group hover:shadow-xl transition-all duration-300 opacity-0 translate-y-8">
                     <div className="text-[#8BC34A] mb-4">{service.icon}</div>
-                    <h3 className="text-xl font-bold text-[#2d2d2d] mb-3">{service.title}</h3>
-                    <p className="text-gray-600 mb-4">{service.description}</p>
+                    <h3 className="text-lg sm:text-xl font-bold text-[#2d2d2d] mb-3">{service.title}</h3>
+                    <p className="text-sm sm:text-base text-gray-600 mb-4">{service.description}</p>
                     <button className="w-10 h-10 bg-[#2d2d2d] text-white rounded-full flex items-center justify-center group-hover:bg-[#8BC34A] transition-colors">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -209,29 +277,31 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-4">
-              <p className="text-[#8BC34A] font-semibold text-lg">Real Solution, Real Fast!</p>
+        <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="text-center mb-4 scroll-animate opacity-0 translate-y-8">
+              <p className="text-[#8BC34A] font-semibold text-base sm:text-lg">Real Solution, Real Fast!</p>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-center text-[#2d2d2d] mb-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-[#2d2d2d] mb-12 sm:mb-16 scroll-animate opacity-0 translate-y-8">
               Best Global Logistics Solutions.
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-              <div className="relative h-96 bg-cover bg-center rounded-lg" style={{
-                backgroundImage: "url('https://unsplash.com/photos/white-airliner-on-tarmack-oCsQLKENz34')"
+            {/* Air Freight Services */}
+            <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center mb-16 sm:mb-20">
+              <div className="scroll-animate opacity-0 translate-x-[-50px] relative h-64 sm:h-80 lg:h-96 bg-cover bg-center rounded-lg overflow-hidden shadow-xl" style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80')"
               }}>
-                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#8BC34A] rounded-lg flex items-center justify-center">
-                  <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                <div className="absolute -bottom-4 sm:-bottom-6 -right-4 sm:-right-6 w-24 h-24 sm:w-32 sm:h-32 bg-[#8BC34A] rounded-lg flex items-center justify-center shadow-2xl">
+                  <svg className="w-12 h-12 sm:w-16 sm:h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 </div>
               </div>
-              <div>
-                <h3 className="text-3xl font-bold text-[#2d2d2d] mb-4">Air Freight Services</h3>
-                <p className="text-gray-600 mb-6">
-                  At our Auto Service garage, we are fully appreciate how difficult it is for people to find.
+              <div className="scroll-animate opacity-0 translate-x-[50px]">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#2d2d2d] mb-4">Air Freight Services</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-6">
+                  Fast and reliable air cargo services for time-sensitive deliveries. We handle international and domestic air freight with precision and care, ensuring your packages arrive on schedule.
                 </p>
                 <Link href="/services" className="inline-flex items-center gap-2 text-[#8BC34A] font-semibold hover:gap-4 transition-all">
                   <span>Read More</span>
@@ -242,11 +312,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="order-2 md:order-1">
-                <h3 className="text-3xl font-bold text-[#2d2d2d] mb-4">Drone Services</h3>
-                <p className="text-gray-600 mb-6">
-                  These are unique and often they differ from one industry to the other. Our logistics expertise.
+            {/* Drone Services */}
+            <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+              <div className="order-2 md:order-1 scroll-animate opacity-0 translate-x-[-50px]">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#2d2d2d] mb-4">Drone Delivery Services</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-6">
+                  Cutting-edge drone technology for rapid last-mile deliveries. Our autonomous delivery drones provide fast, efficient, and eco-friendly solutions for urban and remote locations.
                 </p>
                 <Link href="/services" className="inline-flex items-center gap-2 text-[#8BC34A] font-semibold hover:gap-4 transition-all">
                   <span>Read More</span>
@@ -255,11 +326,12 @@ export default function Home() {
                   </svg>
                 </Link>
               </div>
-              <div className="relative h-96 bg-cover bg-center rounded-lg order-1 md:order-2" style={{
-                backgroundImage: "url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800')"
+              <div className="order-1 md:order-2 scroll-animate opacity-0 translate-x-[50px] relative h-64 sm:h-80 lg:h-96 bg-cover bg-center rounded-lg overflow-hidden shadow-xl" style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1508444845599-5c89863b1c44?w=800&q=80')"
               }}>
-                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#8BC34A] rounded-lg flex items-center justify-center">
-                  <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-24 h-24 sm:w-32 sm:h-32 bg-[#8BC34A] rounded-lg flex items-center justify-center shadow-2xl">
+                  <svg className="w-12 h-12 sm:w-16 sm:h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                   </svg>
                 </div>
@@ -269,30 +341,30 @@ export default function Home() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-20 bg-white border-y border-gray-200">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="flex items-start gap-6">
-                <div className="w-20 h-20 flex-shrink-0">
+        <section className="py-12 sm:py-16 lg:py-20 bg-white border-y border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 scroll-animate opacity-0 translate-y-8">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0">
                   <svg className="w-full h-full text-[#2d2d2d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-[#2d2d2d] mb-2">Branches Across The World 145+</h3>
-                  <p className="text-gray-600">With over 150 branches all over the world we ensure rapid delivery of packages.</p>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[#2d2d2d] mb-2">Branches Across The World 145+</h3>
+                  <p className="text-sm sm:text-base text-gray-600">With over 150 branches all over the world we ensure rapid delivery of packages.</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-6">
-                <div className="w-20 h-20 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 scroll-animate opacity-0 translate-y-8">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0">
                   <svg className="w-full h-full text-[#2d2d2d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-[#2d2d2d] mb-2">2.9K+ Parcel Delivered By Team</h3>
-                  <p className="text-gray-600">We treat all our clients request with care and adequate speed to ensure the quality of service never changes.</p>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[#2d2d2d] mb-2">2.9K+ Parcel Delivered By Team</h3>
+                  <p className="text-sm sm:text-base text-gray-600">We treat all our clients request with care and adequate speed to ensure the quality of service never changes.</p>
                 </div>
               </div>
             </div>
@@ -300,35 +372,28 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-[#2d2d2d] text-white py-16">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-4 gap-12 mb-12">
+        <footer className="bg-[#2d2d2d] text-white py-12 sm:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-12">
               {/* Company Info */}
               <div>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-[#8BC34A] rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#8BC34A] rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <span className="text-2xl font-bold">MovingCargo</span>
+                  <span className="text-xl sm:text-2xl font-bold">MovinCargo</span>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-[#8BC34A] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-
-                  </div>
+                <div className="space-y-4 text-sm sm:text-base">
                   <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-[#8BC34A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#8BC34A] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <p className="text-gray-300">Contact@movingcargo.com</p>
+                    <p className="text-gray-300">Contact@movincargo.com</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-[#8BC34A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#8BC34A] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                     <p className="text-gray-300">(+02) 1800 5656 3010</p>
@@ -338,8 +403,8 @@ export default function Home() {
 
               {/* Our Services */}
               <div>
-                <h3 className="text-xl font-bold mb-6">Our Services</h3>
-                <ul className="space-y-3">
+                <h3 className="text-lg sm:text-xl font-bold mb-6">Our Services</h3>
+                <ul className="space-y-3 text-sm sm:text-base">
                   <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Land Transport</Link></li>
                   <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Consumer Goods</Link></li>
                   <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Big Trailer Truck</Link></li>
@@ -351,28 +416,28 @@ export default function Home() {
 
               {/* Useful Links */}
               <div>
-                <h3 className="text-xl font-bold mb-6">Useful Links</h3>
-                <ul className="space-y-3">
+                <h3 className="text-lg sm:text-xl font-bold mb-6">Useful Links</h3>
+                <ul className="space-y-3 text-sm sm:text-base">
                   <li><Link href="/contact" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Get In Touch</Link></li>
                   <li><Link href="/track" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Real Time Tracking</Link></li>
                   <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Delivery Report</Link></li>
                   <li><Link href="/services" className="text-[#8BC34A] hover:text-white transition-colors">Supply Management</Link></li>
-                  <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Download Broucher</Link></li>
+                  <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Download Brochure</Link></li>
                   <li><Link href="/services" className="text-gray-300 hover:text-[#8BC34A] transition-colors">Transport Service</Link></li>
                 </ul>
               </div>
 
               {/* Newsletter */}
               <div>
-                <h3 className="text-xl font-bold mb-6">Newsletter Signup</h3>
-                <p className="text-gray-300 mb-4">Subscribe To Our Newsletter And Get Daily 10% Off Your First Purchase.</p>
+                <h3 className="text-lg sm:text-xl font-bold mb-6">Newsletter Signup</h3>
+                <p className="text-sm sm:text-base text-gray-300 mb-4">Subscribe To Our Newsletter And Get Daily 10% Off Your First Purchase.</p>
                 <div className="flex flex-col gap-3">
                   <input
                       type="email"
                       placeholder="Your email"
-                      className="px-4 py-3 bg-[#1a1a1a] text-white rounded focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+                      className="px-4 py-3 bg-[#1a1a1a] text-white rounded focus:outline-none focus:ring-2 focus:ring-[#8BC34A] text-sm sm:text-base"
                   />
-                  <button className="px-6 py-3 bg-[#8BC34A] text-white font-semibold rounded hover:bg-[#7CB342] transition-colors">
+                  <button className="px-6 py-3 bg-[#8BC34A] text-white font-semibold rounded hover:bg-[#7CB342] transition-colors text-sm sm:text-base">
                     Subscribe
                   </button>
                 </div>
@@ -399,110 +464,132 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-              <p className="text-gray-400 text-sm mb-4 md:mb-0">
-                Copyright 2024 MovingCargo, All Rights Reserved. Powered By CymolThemes
+            <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-gray-400 text-xs sm:text-sm text-center md:text-left">
+                Copyright 2024 MovinCargo, All Rights Reserved. Powered By CymolThemes
               </p>
-              <div className="flex gap-6">
-                <Link href="/privacy" className="text-gray-400 hover:text-[#8BC34A] text-sm transition-colors">Privacy</Link>
-                <Link href="/about" className="text-gray-400 hover:text-[#8BC34A] text-sm transition-colors">About Us</Link>
-                <Link href="/contact" className="text-gray-400 hover:text-[#8BC34A] text-sm transition-colors">Contact</Link>
+              <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm">
+                <Link href="/privacy" className="text-gray-400 hover:text-[#8BC34A] transition-colors">Privacy</Link>
+                <Link href="/about" className="text-gray-400 hover:text-[#8BC34A] transition-colors">About Us</Link>
+                <Link href="/contact" className="text-gray-400 hover:text-[#8BC34A] transition-colors">Contact</Link>
               </div>
             </div>
           </div>
         </footer>
 
         <style jsx global>{`
-        @keyframes word-top-left {
-          0% {
-            transform: translate(-100%, -100%) rotate(-45deg);
-            opacity: 0;
+          @keyframes word-top-left {
+            0% {
+              transform: translate(-100%, -100%) rotate(-45deg);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(0, 0) rotate(0deg);
+              opacity: 1;
+            }
           }
-          100% {
-            transform: translate(0, 0) rotate(0deg);
-            opacity: 1;
-          }
-        }
 
-        @keyframes word-top-right {
-          0% {
-            transform: translate(100%, -100%) rotate(45deg);
-            opacity: 0;
+          @keyframes word-top-right {
+            0% {
+              transform: translate(100%, -100%) rotate(45deg);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(0, 0) rotate(0deg);
+              opacity: 1;
+            }
           }
-          100% {
-            transform: translate(0, 0) rotate(0deg);
-            opacity: 1;
+
+          @keyframes word-bottom-left {
+            0% {
+              transform: translate(-100%, 100%) rotate(45deg);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(0, 0) rotate(0deg);
+              opacity: 1;
+            }
           }
-        }
 
-        @keyframes word-bottom-left {
-          0% {
-            transform: translate(-100%, 100%) rotate(45deg);
-            opacity: 0;
+          @keyframes word-bottom-right {
+            0% {
+              transform: translate(100%, 100%) rotate(-45deg);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(0, 0) rotate(0deg);
+              opacity: 1;
+            }
           }
-          100% {
-            transform: translate(0, 0) rotate(0deg);
-            opacity: 1;
+
+          @keyframes word-left {
+            0% {
+              transform: translate(-150%, -50%) rotate(-90deg);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(0, -50%) rotate(0deg);
+              opacity: 1;
+            }
           }
-        }
 
-        @keyframes word-bottom-right {
-          0% {
-            transform: translate(100%, 100%) rotate(-45deg);
-            opacity: 0;
+          @keyframes word-right {
+            0% {
+              transform: translate(150%, -50%) rotate(90deg);
+              opacity: 0;
+            }
+            100% {
+              transform: translate(0, -50%) rotate(0deg);
+              opacity: 1;
+            }
           }
-          100% {
-            transform: translate(0, 0) rotate(0deg);
-            opacity: 1;
+
+          .animate-word-top-left {
+            animation: word-top-left 1.5s ease-out forwards;
           }
-        }
 
-        @keyframes word-left {
-          0% {
-            transform: translate(-150%, -50%) rotate(-90deg);
-            opacity: 0;
+          .animate-word-top-right {
+            animation: word-top-right 1.5s ease-out forwards;
           }
-          100% {
-            transform: translate(0, -50%) rotate(0deg);
-            opacity: 1;
+
+          .animate-word-bottom-left {
+            animation: word-bottom-left 1.5s ease-out forwards;
           }
-        }
 
-        @keyframes word-right {
-          0% {
-            transform: translate(150%, -50%) rotate(90deg);
-            opacity: 0;
+          .animate-word-bottom-right {
+            animation: word-bottom-right 1.5s ease-out forwards;
           }
-          100% {
-            transform: translate(0, -50%) rotate(0deg);
-            opacity: 1;
+
+          .animate-word-left {
+            animation: word-left 1.5s ease-out forwards;
           }
-        }
 
-        .animate-word-top-left {
-          animation: word-top-left 1.5s ease-out forwards;
-        }
+          .animate-word-right {
+            animation: word-right 1.5s ease-out forwards;
+          }
 
-        .animate-word-top-right {
-          animation: word-top-right 1.5s ease-out forwards;
-        }
+          /* Scroll animations */
+          .scroll-animate {
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+          }
 
-        .animate-word-bottom-left {
-          animation: word-bottom-left 1.5s ease-out forwards;
-        }
+          .scroll-animate.animate-in {
+            opacity: 1 !important;
+            transform: translate(0, 0) !important;
+          }
 
-        .animate-word-bottom-right {
-          animation: word-bottom-right 1.5s ease-out forwards;
-        }
+          /* Smooth scrolling */
+          html {
+            scroll-behavior: smooth;
+          }
 
-        .animate-word-left {
-          animation: word-left 1.5s ease-out forwards;
-        }
-
-        .animate-word-right {
-          animation: word-right 1.5s ease-out forwards;
-        }
-      `}</style>
+          /* Mobile menu animation */
+          @media (max-width: 1023px) {
+            nav > div > div:last-child {
+              transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            }
+          }
+        `}</style>
       </div>
   );
 }

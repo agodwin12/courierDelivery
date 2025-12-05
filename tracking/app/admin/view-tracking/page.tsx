@@ -54,6 +54,9 @@ export default function ViewTracking() {
         notes: ''
     });
 
+    // Get API URL from environment variable
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
     // Check authentication
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -73,7 +76,7 @@ export default function ViewTracking() {
     const fetchDeliveries = async () => {
         try {
             const token = localStorage.getItem('token');
-            let url = 'http://localhost:3001/api/deliveries?';
+            let url = `${API_URL}/deliveries?`;
 
             if (filterStatus) url += `status=${filterStatus}&`;
             if (filterMethod) url += `method=${filterMethod}&`;
@@ -102,7 +105,7 @@ export default function ViewTracking() {
     const fetchStats = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3001/api/deliveries/stats/overview', {
+            const response = await fetch(`${API_URL}/deliveries/stats/overview`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -155,7 +158,7 @@ export default function ViewTracking() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3001/api/deliveries/${selectedDelivery.id}/status`, {
+            const response = await fetch(`${API_URL}/deliveries/${selectedDelivery.id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -189,7 +192,7 @@ export default function ViewTracking() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3001/api/deliveries/${selectedDelivery.id}/location`, {
+            const response = await fetch(`${API_URL}/deliveries/${selectedDelivery.id}/location`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -221,7 +224,7 @@ export default function ViewTracking() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3001/api/deliveries/${deliveryId}`, {
+            const response = await fetch(`${API_URL}/deliveries/${deliveryId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -291,7 +294,7 @@ export default function ViewTracking() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
-                        <span className="text-xl font-bold">MovingCargo</span>
+                        <span className="text-xl font-bold">MovinCargo</span>
                     </Link>
                 </div>
 

@@ -34,6 +34,9 @@ export default function AdminDashboard() {
         role: 'admin'
     });
 
+    // Get API URL from environment variable
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
     // Check authentication
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -52,7 +55,7 @@ export default function AdminDashboard() {
     const fetchAdmins = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3001/api/auth/admins', {
+            const response = await fetch(`${API_URL}/auth/admins`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -87,7 +90,7 @@ export default function AdminDashboard() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3001/api/auth/register', {
+            const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -119,7 +122,7 @@ export default function AdminDashboard() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3001/api/auth/profile', {
+            const response = await fetch(`${API_URL}/auth/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -154,7 +157,7 @@ export default function AdminDashboard() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3001/api/auth/admins/${adminId}/deactivate`, {
+            const response = await fetch(`${API_URL}/auth/admins/${adminId}/deactivate`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -210,7 +213,7 @@ export default function AdminDashboard() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
-                        <span className="text-xl font-bold">MovingCargo</span>
+                        <span className="text-xl font-bold">MovinCargo</span>
                     </Link>
                 </div>
 

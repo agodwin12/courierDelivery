@@ -37,6 +37,9 @@ export default function CreateTracking() {
         special_instructions: ''
     });
 
+    // Get API URL from environment variable
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
     // Check authentication
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -76,7 +79,7 @@ export default function CreateTracking() {
         try {
             const token = localStorage.getItem('token');
 
-            const response = await fetch('http://localhost:3001/api/deliveries', {
+            const response = await fetch(`${API_URL}/deliveries`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +138,7 @@ export default function CreateTracking() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
-                        <span className="text-xl font-bold">MovingCargo</span>
+                        <span className="text-xl font-bold">MovinCargo</span>
                     </Link>
                 </div>
 
